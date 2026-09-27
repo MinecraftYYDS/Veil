@@ -49,6 +49,9 @@ ThemeData glassTheme(ThemeData base) {
     ),
     dialogTheme: base.dialogTheme.copyWith(
       backgroundColor: scheme.surfaceContainerLowest,
+      // A light haze instead of a dark scrim: on the transparent desktop
+      // window the barrier would otherwise tint the wallpaper grey.
+      barrierColor: const Color(0x66EEF2FA),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
     ),
     filledButtonTheme: FilledButtonThemeData(
