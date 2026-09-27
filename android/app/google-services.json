@@ -65,7 +65,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:000000000000:android:0000000000000010",
         "android_client_info": {
-          "package_name": "com.chinatsu.flclash"
+          "package_name": "com.chinatsu.veil"
         }
       },
       "oauth_client": [],
@@ -84,7 +84,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:000000000000:android:0000000000000011",
         "android_client_info": {
-          "package_name": "com.chinatsu.flclash.dev"
+          "package_name": "com.chinatsu.veil.dev"
         }
       },
       "oauth_client": [],

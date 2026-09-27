@@ -35,7 +35,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.chinatsu.flclash"
+        applicationId = "com.chinatsu.veil"
         minSdk = flutter.minSdkVersion
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = flutter.versionCode

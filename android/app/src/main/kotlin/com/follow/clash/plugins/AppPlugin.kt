@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -188,6 +189,15 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 GlobalState.lastExitInfo()
             }
 
+            "setLauncherIcon" -> {
+                val icon = call.argument<String>("icon") ?: LAUNCHER_LIGHT
+                result.success(setLauncherIcon(icon))
+            }
+
+            "getLauncherIcon" -> {
+                result.success(currentLauncherIcon())
+            }
+
             else -> {
                 result.notImplemented()
             }
@@ -210,6 +220,41 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 result.error("PLATFORM_ERROR", error.toString(), null)
             }
         }
+    }
+
+    private fun launcherComponent(icon: String) = ComponentName(
+        GlobalState.application.packageName,
+        if (icon == LAUNCHER_DARK) LAUNCHER_DARK_ALIAS else LAUNCHER_LIGHT_ALIAS,
+    )
+
+    /** Swaps the enabled launcher activity-alias; each alias carries its own icon. */
+    private fun setLauncherIcon(icon: String): Boolean {
+        val target = if (icon == LAUNCHER_DARK) LAUNCHER_DARK else LAUNCHER_LIGHT
+        val other = if (target == LAUNCHER_DARK) LAUNCHER_LIGHT else LAUNCHER_DARK
+        return try {
+            val pm = GlobalState.application.packageManager
+            // Enable the new alias first so the app never ends up without a launcher entry.
+            pm.setComponentEnabledSetting(
+                launcherComponent(target),
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP,
+            )
+            pm.setComponentEnabledSetting(
+                launcherComponent(other),
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP,
+            )
+            true
+        } catch (error: Exception) {
+            GlobalState.log("setLauncherIcon failed: $error")
+            false
+        }
+    }
+
+    private fun currentLauncherIcon(): String {
+        val state = GlobalState.application.packageManager
+            .getComponentEnabledSetting(launcherComponent(LAUNCHER_DARK))
+        return if (state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) LAUNCHER_DARK else LAUNCHER_LIGHT
     }
 
     private fun initShortcuts(label: String) {
@@ -463,5 +508,9 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         const val VPN_PERMISSION_REQUEST_CODE = 1001
         const val NOTIFICATION_PERMISSION_REQUEST_CODE = 1002
         const val INSTALLED_APPS_PERMISSION_REQUEST_CODE = 1003
+        const val LAUNCHER_LIGHT = "light"
+        const val LAUNCHER_DARK = "dark"
+        const val LAUNCHER_LIGHT_ALIAS = "com.follow.clash.LauncherLight"
+        const val LAUNCHER_DARK_ALIAS = "com.follow.clash.LauncherDark"
     }
 }
