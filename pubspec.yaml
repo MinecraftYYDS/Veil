@@ -82,6 +82,7 @@ dependencies:
     path: plugins/rust_api
   setup:
     path: plugins/setup
+  flutter_acrylic: ^1.1.4
 dev_dependencies:
   flutter_test:
     sdk: flutter

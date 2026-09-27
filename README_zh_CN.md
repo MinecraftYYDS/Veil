@@ -4,6 +4,13 @@
 
 </div>
 
+> [!NOTE]
+> **本项目是 [FlClash](https://github.com/chen08209/FlClash)（作者 chen08209）的修改版本**，由 [chinatsu033](https://github.com/chinatsu033/FlClash) 维护。
+> 它保留了 FlClash 的核心与服务逻辑，把主界面换成了「液态玻璃」风格：Windows 上是紧凑的迷你小组件窗口，Android 上是竖屏地图布局，节点在点阵世界地图上按地区分组显示。
+> 本项目与原项目一样采用 **GNU 通用公共许可证 v3.0（GPL-3.0）** 授权（见 [LICENSE](LICENSE)），并保留了上游的版权与许可声明。
+> Android 包名为 `com.chinatsu.flclash`，可以和原版 FlClash 同时安装。
+> 本分支的问题请不要反馈给上游 FlClash。
+
 ## FlClash
 
 [![Downloads](https://img.shields.io/github/downloads/chen08209/FlClash/total?style=flat-square&logo=github)](https://github.com/chen08209/FlClash/releases/)[![Last Version](https://img.shields.io/github/release/chen08209/FlClash/all.svg?style=flat-square)](https://github.com/chen08209/FlClash/releases/)[![License](https://img.shields.io/github/license/chen08209/FlClash?style=flat-square)](LICENSE)

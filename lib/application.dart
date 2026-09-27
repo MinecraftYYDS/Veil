@@ -16,7 +16,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'pages/pages.dart';
+import 'glass/glass_home.dart';
+import 'glass/glass_window.dart';
 
 Widget buildManagerStack({
   required bool isDesktop,
@@ -24,9 +25,7 @@ Widget buildManagerStack({
   onConnectivityChanged,
   required Widget child,
 }) {
-  final platformApp = isDesktop
-      ? WindowHeaderContainer(child: child)
-      : VpnManager(child: child);
+  final platformApp = isDesktop ? child : VpnManager(child: child);
   final state = AppStateManager(
     child: CoreManager(
       child: ConnectivityManager(
@@ -68,10 +67,6 @@ class ApplicationState extends ConsumerState<Application> {
       TargetPlatform.macOS: commonSharedXPageTransitions,
     },
   );
-
-  ColorScheme _getAppColorScheme({required Brightness brightness}) {
-    return ref.read(genColorSchemeProvider(brightness));
-  }
 
   @override
   void initState() {
@@ -148,10 +143,10 @@ class ApplicationState extends ConsumerState<Application> {
         final locale = ref.watch(
           appSettingProvider.select((state) => state.locale),
         );
-        final themeProps = ref.watch(themeSettingProvider);
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           navigatorKey: globalState.navigatorKey,
+          navigatorObservers: [if (system.isDesktop) GlassDialogObserver()],
           onNavigationNotification: (_) => true,
           localizationsDelegates: const [
             AppLocalizations.delegate,
@@ -176,23 +171,25 @@ class ApplicationState extends ConsumerState<Application> {
           title: appName,
           locale: getLocaleForString(locale),
           supportedLocales: AppLocalizations.delegate.supportedLocales,
-          themeMode: themeProps.themeMode,
-          theme: ThemeData(
-            useMaterial3: true,
-            pageTransitionsTheme: _pageTransitionsTheme,
-            colorScheme: _getAppColorScheme(brightness: Brightness.light),
-          ).withAppShapes,
-          darkTheme: ThemeData(
-            useMaterial3: true,
-            pageTransitionsTheme: _pageTransitionsTheme,
-            colorScheme: _getAppColorScheme(
+          themeMode: ThemeMode.dark,
+          theme: glassTheme(
+            ThemeData(
+              useMaterial3: true,
               brightness: Brightness.dark,
-            ).toPureBlack(themeProps.pureBlack),
-          ).withAppShapes,
+              pageTransitionsTheme: _pageTransitionsTheme,
+            ).withAppShapes,
+          ),
+          darkTheme: glassTheme(
+            ThemeData(
+              useMaterial3: true,
+              brightness: Brightness.dark,
+              pageTransitionsTheme: _pageTransitionsTheme,
+            ).withAppShapes,
+          ),
           home: child!,
         );
       },
-      child: const HomePage(),
+      child: const GlassHome(),
     );
   }
 

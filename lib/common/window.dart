@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/glass/glass_window.dart';
 import 'package:fl_clash/models/config.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:screen_retriever/screen_retriever.dart';
@@ -48,14 +49,14 @@ class Window implements WindowPort {
     if (system.isLinux) {
       _supportsPosition = await windowManager.isPositionSupported();
     }
-    final WindowOptions windowOptions = WindowOptions(
-      size: props.size,
-      minimumSize: const Size(380, 400),
+    const WindowOptions windowOptions = WindowOptions(
+      size: Size(glassWidgetWidth, glassWidgetHeight),
+      minimumSize: Size(glassWidgetWidth, glassWidgetHeight),
     );
     if (!system.isMacOS || version > 10) {
       await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
     }
-    await windowManager.setMaximizable(true);
+    await windowManager.setMaximizable(false);
     // On Linux the compositor only honors positioning after the window is shown;
     // elsewhere position it pre-show to avoid a visible jump.
     if (!system.isLinux) {
@@ -66,6 +67,7 @@ class Window implements WindowPort {
       await _windowPosition(props);
     }
     await windowManager.setPreventClose(true);
+    await GlassWindow.init();
   }
 
   Future<void> _windowPosition(WindowProps props) async {
@@ -75,7 +77,7 @@ class Window implements WindowPort {
       if (left == null || top == null) {
         await windowManager.setAlignment(Alignment.center);
       } else {
-        final size = props.size;
+        const size = Size(glassWidgetWidth, glassWidgetHeight);
         final right = left + size.width;
         final bottom = top + size.height;
         final displays = await screenRetriever.getAllDisplays();

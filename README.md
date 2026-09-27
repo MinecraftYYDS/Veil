@@ -4,6 +4,13 @@
 
 </div>
 
+> [!NOTE]
+> **This is a modified version of [FlClash](https://github.com/chen08209/FlClash)** by chen08209, maintained by [chinatsu033](https://github.com/chinatsu033/FlClash).
+> It keeps FlClash's core and service logic and swaps the home screen for a "liquid glass" UI: a compact mini-widget window on Windows and a portrait map layout on Android, with nodes grouped by region on a dot-matrix world map.
+> Like the original, it is licensed under the **GNU General Public License v3.0** (see [LICENSE](LICENSE)); the upstream copyright and license notices are kept.
+> Its Android package name is `com.chinatsu.flclash`, so it installs alongside the original FlClash.
+> Please don't report problems with this fork to upstream FlClash.
+
 ## FlClash
 
 [![Downloads](https://img.shields.io/github/downloads/chen08209/FlClash/total?style=flat-square&logo=github)](https://github.com/chen08209/FlClash/releases/)[![Last Version](https://img.shields.io/github/release/chen08209/FlClash/all.svg?style=flat-square)](https://github.com/chen08209/FlClash/releases/)[![License](https://img.shields.io/github/license/chen08209/FlClash?style=flat-square)](LICENSE)
