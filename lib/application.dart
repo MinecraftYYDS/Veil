@@ -17,6 +17,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'glass/glass_home.dart';
+import 'glass/glass_prefs.dart';
 import 'glass/glass_window.dart';
 
 Widget buildManagerStack({
@@ -143,50 +144,56 @@ class ApplicationState extends ConsumerState<Application> {
         final locale = ref.watch(
           appSettingProvider.select((state) => state.locale),
         );
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          navigatorKey: globalState.navigatorKey,
-          navigatorObservers: [if (system.isDesktop) GlassDialogObserver()],
-          onNavigationNotification: (_) => true,
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            ...GlobalMaterialLocalizations.delegates,
-          ],
-          builder: (context, child) {
-            // The bridge's legacy Theme swaps in its own default IconTheme color,
-            // which material_ui IconButton.filled reads as custom and loses onPrimary.
-            // ignore: deprecated_member_use
-            return MaterialUiCompatibilityBridge(
-              child: IconTheme(
-                data: Theme.of(context).iconTheme,
-                child: buildManagerStack(
-                  isDesktop: system.isDesktop,
-                  onConnectivityChanged: _handleConnectivityChanged,
-                  child: child!,
+        return ValueListenableBuilder<GlassAppearance>(
+          valueListenable: GlassPrefs.appearance,
+          builder: (context, _, _) => MaterialApp(
+            debugShowCheckedModeBanner: false,
+            navigatorKey: globalState.navigatorKey,
+            navigatorObservers: [if (system.isDesktop) GlassDialogObserver()],
+            onNavigationNotification: (_) => true,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              ...GlobalMaterialLocalizations.delegates,
+            ],
+            builder: (context, child) {
+              // The bridge's legacy Theme swaps in its own default IconTheme color,
+              // which material_ui IconButton.filled reads as custom and loses onPrimary.
+              // ignore: deprecated_member_use
+              return GlassThemeScope(
+                child: MaterialUiCompatibilityBridge(
+                  child: IconTheme(
+                    data: Theme.of(context).iconTheme,
+                    child: buildManagerStack(
+                      isDesktop: system.isDesktop,
+                      onConnectivityChanged: _handleConnectivityChanged,
+                      child: child!,
+                    ),
+                  ),
                 ),
-              ),
-            );
-          },
-          scrollBehavior: const BaseScrollBehavior(),
-          title: appName,
-          locale: getLocaleForString(locale),
-          supportedLocales: AppLocalizations.delegate.supportedLocales,
-          themeMode: ThemeMode.light,
-          theme: glassTheme(
-            ThemeData(
-              useMaterial3: true,
-              brightness: Brightness.light,
-              pageTransitionsTheme: _pageTransitionsTheme,
-            ).withAppShapes,
+              );
+            },
+            scrollBehavior: const BaseScrollBehavior(),
+            title: appName,
+            locale: getLocaleForString(locale),
+            supportedLocales: AppLocalizations.delegate.supportedLocales,
+            themeMode: GlassPrefs.themeMode,
+            theme: glassTheme(
+              ThemeData(
+                useMaterial3: true,
+                brightness: Brightness.light,
+                pageTransitionsTheme: _pageTransitionsTheme,
+              ).withAppShapes,
+            ),
+            darkTheme: glassTheme(
+              ThemeData(
+                useMaterial3: true,
+                brightness: Brightness.dark,
+                pageTransitionsTheme: _pageTransitionsTheme,
+              ).withAppShapes,
+              dark: true,
+            ),
+            home: child!,
           ),
-          darkTheme: glassTheme(
-            ThemeData(
-              useMaterial3: true,
-              brightness: Brightness.light,
-              pageTransitionsTheme: _pageTransitionsTheme,
-            ).withAppShapes,
-          ),
-          home: child!,
         );
       },
       child: const GlassHome(),

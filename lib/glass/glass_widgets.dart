@@ -10,16 +10,20 @@ bool glassDark = false;
 Color _pick(Color light, Color dark) => glassDark ? dark : light;
 
 abstract final class GlassColors {
-  static Color get bgTop => _pick(const Color(0xFFEAF1FF), const Color(0xFF1D1D1D));
-  static Color get bgMid => _pick(const Color(0xFFF4F6FC), const Color(0xFF131313));
+  static Color get bgTop =>
+      _pick(const Color(0xFFEAF1FF), const Color(0xFF1D1D1D));
+  static Color get bgMid =>
+      _pick(const Color(0xFFF4F6FC), const Color(0xFF131313));
   static Color get bgBottom =>
       _pick(const Color(0xFFF3EEF8), const Color(0xFF0A0A0A));
-  static Color get glow => _pick(const Color(0xFF8CC8FF), const Color(0xFFFFFFFF));
+  static Color get glow =>
+      _pick(const Color(0xFF8CC8FF), const Color(0xFFFFFFFF));
   static Color get accent =>
       _pick(const Color(0xFF2F7CF6), const Color(0xFFEDEDED));
   static Color get running =>
       _pick(const Color(0xFF1FB57F), const Color(0xFFF2F2F2));
-  static Color get text => _pick(const Color(0xFF1B2233), const Color(0xFFF2F2F2));
+  static Color get text =>
+      _pick(const Color(0xFF1B2233), const Color(0xFFF2F2F2));
   static Color get textDim =>
       _pick(const Color(0xFF566079), const Color(0xFFB4B4B4));
   static Color get textFaint =>
@@ -30,7 +34,8 @@ abstract final class GlassColors {
       _pick(const Color(0xFFE5484D), const Color(0xFFD9D9D9));
 
   /// Neutral ink used for faint map dots and inactive tracks.
-  static Color get ink => _pick(const Color(0xFF5B6B8C), const Color(0xFFFFFFFF));
+  static Color get ink =>
+      _pick(const Color(0xFF5B6B8C), const Color(0xFFFFFFFF));
 
   /// Filled call-to-action button (Save) and its label.
   static Color get primaryFill => _pick(
@@ -199,15 +204,15 @@ class GlassSurface extends StatelessWidget {
             end: Alignment.bottomRight,
             colors: glassDark
                 ? [
-                    const Color(0xFF2E2E2E).withValues(
-                      alpha: math.min(0.94, 0.5 * s * glassMilk),
-                    ),
-                    const Color(0xFF161616).withValues(
-                      alpha: math.min(0.9, 0.4 * s * glassMilk),
-                    ),
-                    const Color(0xFF222222).withValues(
-                      alpha: math.min(0.92, 0.46 * s * glassMilk),
-                    ),
+                    const Color(
+                      0xFF2E2E2E,
+                    ).withValues(alpha: math.min(0.94, 0.5 * s * glassMilk)),
+                    const Color(
+                      0xFF161616,
+                    ).withValues(alpha: math.min(0.9, 0.4 * s * glassMilk)),
+                    const Color(
+                      0xFF222222,
+                    ).withValues(alpha: math.min(0.92, 0.46 * s * glassMilk)),
                   ]
                 : [
                     Colors.white.withValues(

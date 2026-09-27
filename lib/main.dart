@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:fl_clash/glass/glass_prefs.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/pages/error.dart';
 import 'package:material_ui/material_ui.dart';
@@ -30,6 +31,7 @@ void main(List<String> args) {
       try {
         await RustLib.init();
         final version = await system.init();
+        await GlassPrefs.load();
         final container = await bootstrap.init(version);
         HttpOverrides.global = FlClashHttpOverrides(container);
         request.attach(container.read);

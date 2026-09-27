@@ -1,3 +1,4 @@
+import 'package:fl_clash/glass/glass_prefs.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -44,7 +45,7 @@ class AppTray implements TrayPort {
   }
 
   String get _trayIconDir {
-    return isWindows ? 'assets/images/tray/windows' : 'assets/images/tray/unix';
+    return GlassPrefs.trayDir(windows: isWindows);
   }
 
   String getTrayIcon({required bool isStart, required bool tunEnable}) {

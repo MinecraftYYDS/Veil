@@ -193,6 +193,7 @@ class _WorldMapPainter extends CustomPainter {
   final RegionKey? selected;
   final Animation<double> pulse;
   final Rect Function(Size size) rectFor;
+  final bool dark = glassDark;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -230,14 +231,14 @@ class _WorldMapPainter extends CustomPainter {
     canvas.drawPoints(
       ui.PointMode.points,
       dim,
-      dots(const Color(0xFF5B6B8C).withValues(alpha: 0.2), dotSize),
+      dots(GlassColors.ink.withValues(alpha: glassDark ? 0.14 : 0.2), dotSize),
     );
     if (lit.isNotEmpty) {
       canvas.drawPoints(
         ui.PointMode.points,
         lit,
         dots(
-          GlassColors.glow.withValues(alpha: 0.55),
+          GlassColors.glow.withValues(alpha: glassDark ? 0.3 : 0.55),
           dotSize * 2.4,
           dotSize * 1.3,
         ),
@@ -275,7 +276,11 @@ class _WorldMapPainter extends CustomPainter {
         base * 3.2,
         Paint()
           ..color = (isSelected ? GlassColors.accent : GlassColors.glow)
-              .withValues(alpha: isSelected ? 0.7 : 0.75)
+              .withValues(
+                alpha: glassDark
+                    ? (isSelected ? 0.55 : 0.4)
+                    : (isSelected ? 0.7 : 0.75),
+              )
           ..maskFilter = MaskFilter.blur(BlurStyle.normal, base * 2.2),
       );
       canvas.drawCircle(p, base, Paint()..color = Colors.white);
@@ -306,5 +311,7 @@ class _WorldMapPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_WorldMapPainter oldDelegate) =>
-      oldDelegate.markers != markers || oldDelegate.selected != selected;
+      oldDelegate.markers != markers ||
+      oldDelegate.selected != selected ||
+      oldDelegate.dark != dark;
 }

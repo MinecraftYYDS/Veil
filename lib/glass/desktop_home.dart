@@ -362,10 +362,7 @@ class _MapCard extends StatelessWidget {
                     region == null
                         ? strings.tapToSwitch
                         : strings.nodes(region.nodes.length),
-                    style: TextStyle(
-                      color: GlassColors.textDim,
-                      fontSize: 13,
-                    ),
+                    style: TextStyle(color: GlassColors.textDim, fontSize: 13),
                   ),
                 ],
               ),

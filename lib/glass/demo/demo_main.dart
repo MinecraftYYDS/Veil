@@ -14,6 +14,7 @@ import 'package:window_manager/window_manager.dart';
 
 import '../desktop_home.dart';
 import '../glass_home.dart';
+import '../glass_prefs.dart';
 import '../glass_settings.dart';
 import '../glass_state.dart';
 import '../glass_widgets.dart';
@@ -150,6 +151,12 @@ final _scenes = <String, _Scene>{
     () => const GlassSettingsPage(),
     phone: true,
   ),
+  'mobile_settings_icon': _Scene(
+    'mobile_settings_icon',
+    const Size(390, 844),
+    () => const GlassSettingsPage(initialOffset: 330),
+    phone: true,
+  ),
 };
 
 Future<void> main(List<String> args) async {
@@ -163,6 +170,8 @@ Future<void> main(List<String> args) async {
   }
 
   final scene = _scenes[arg('scene', 'desktop_map')]!;
+  glassDark = arg('theme', 'light') == 'dark';
+  if (arg('icon', 'light') == 'dark') GlassPrefs.icon.value = GlassIcon.dark;
   glassMobileLayout = scene.phone;
   if (!scene.phone) configureGlassForDesktop();
   final locale = arg('locale', 'zh_CN');
@@ -225,7 +234,11 @@ Future<void> main(List<String> args) async {
           ...GlobalMaterialLocalizations.delegates,
         ],
         theme: glassTheme(
-          ThemeData(useMaterial3: true, brightness: Brightness.light),
+          ThemeData(
+            useMaterial3: true,
+            brightness: glassDark ? Brightness.dark : Brightness.light,
+          ),
+          dark: glassDark,
         ),
         home: Align(
           alignment: Alignment.topLeft,
@@ -347,7 +360,9 @@ class _DesktopStage extends StatelessWidget {
 class _WallpaperPainter extends CustomPainter {
   const _WallpaperPainter();
 
-  static final bool _dark = Platform.environment['GLASS_WALLPAPER'] == 'dark';
+  static final String _kind = Platform.environment['GLASS_WALLPAPER'] ?? '';
+  static final bool _dark = _kind == 'dark';
+  static final bool _night = _kind == 'night';
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -358,7 +373,9 @@ class _WallpaperPainter extends CustomPainter {
         ..shader = LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: _dark
+          colors: _night
+              ? const [Color(0xFF3A3A3A), Color(0xFF1E1E1E), Color(0xFF0E0E0E)]
+              : _dark
               ? const [Color(0xFF1B1446), Color(0xFF0B1D3A), Color(0xFF071019)]
               : const [Color(0xFFE3ECFA), Color(0xFFBCD0F2), Color(0xFF93AEE3)],
         ).createShader(rect),
@@ -374,7 +391,24 @@ class _WallpaperPainter extends CustomPainter {
       );
     }
 
-    if (_dark) {
+    if (_night) {
+      // Neutral graphite wallpaper with soft light pools (no colour).
+      blob(
+        Offset(size.width * 0.2, size.height * 0.15),
+        300,
+        const Color(0x55FFFFFF),
+      );
+      blob(
+        Offset(size.width * 0.85, size.height * 0.7),
+        320,
+        const Color(0x33FFFFFF),
+      );
+      blob(
+        Offset(size.width * 0.5, size.height * 0.95),
+        260,
+        const Color(0x22FFFFFF),
+      );
+    } else if (_dark) {
       blob(
         Offset(size.width * 0.18, size.height * 0.2),
         260,

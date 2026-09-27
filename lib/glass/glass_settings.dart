@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'glass_l10n.dart';
+import 'glass_prefs.dart';
 import 'glass_state.dart';
 import 'glass_widgets.dart';
 import 'glass_window.dart';
@@ -51,10 +52,12 @@ class GlassSwitch extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(height / 2),
             color: value
-                ? GlassColors.running.withValues(alpha: 0.85)
-                : const Color(0xFF8D96AB).withValues(alpha: 0.28),
+                ? GlassColors.switchOn
+                : GlassColors.ink.withValues(alpha: glassDark ? 0.16 : 0.28),
             border: Border.all(
-              color: Colors.white.withValues(alpha: value ? 0.7 : 0.6),
+              color: Colors.white.withValues(
+                alpha: glassDark ? (value ? 0.4 : 0.14) : (value ? 0.7 : 0.6),
+              ),
             ),
           ),
           child: AnimatedAlign(
@@ -113,8 +116,10 @@ class GlassSegmented<T> extends StatelessWidget {
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(height / 2),
-        color: const Color(0xFF5B6B8C).withValues(alpha: 0.12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.6)),
+        color: GlassColors.ink.withValues(alpha: glassDark ? 0.08 : 0.12),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: glassDark ? 0.12 : 0.6),
+        ),
       ),
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -133,7 +138,7 @@ class GlassSegmented<T> extends StatelessWidget {
                   blur: 0,
                   shadow: false,
                   strength: 1.6,
-                  tint: Colors.white.withValues(alpha: 0.7),
+                  tint: Colors.white.withValues(alpha: glassDark ? 0.16 : 0.7),
                   child: const SizedBox.expand(),
                 ),
               ),
@@ -187,7 +192,9 @@ class _CardHeader extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(11),
             color: GlassColors.accent.withValues(alpha: 0.12),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: glassDark ? 0.14 : 0.7),
+            ),
           ),
           child: Icon(icon, size: 19, color: GlassColors.accent),
         ),
@@ -279,6 +286,152 @@ class GlassModeCard extends ConsumerWidget {
   }
 }
 
+/// Appearance (light / dark / follow system) and the launcher icon choice.
+class GlassAppearanceCard extends ConsumerWidget {
+  const GlassAppearanceCard({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final strings = GlassStrings.of(context);
+    return GlassSurface(
+      radius: 24,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _CardHeader(icon: Icons.palette_rounded, title: strings.appearance),
+          const SizedBox(height: 14),
+          ValueListenableBuilder<GlassAppearance>(
+            valueListenable: GlassPrefs.appearance,
+            builder: (_, value, _) => GlassSegmented<GlassAppearance>(
+              values: GlassAppearance.values,
+              value: value,
+              labelOf: (v) => switch (v) {
+                GlassAppearance.light => strings.themeLight,
+                GlassAppearance.dark => strings.themeDark,
+                GlassAppearance.system => strings.themeSystem,
+              },
+              onChanged: GlassPrefs.setAppearance,
+            ),
+          ),
+          const SizedBox(height: 18),
+          Row(
+            children: [
+              Icon(Icons.apps_rounded, size: 18, color: GlassColors.textDim),
+              const SizedBox(width: 8),
+              Text(
+                strings.icon,
+                style: TextStyle(
+                  color: GlassColors.text,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          ValueListenableBuilder<GlassIcon>(
+            valueListenable: GlassPrefs.icon,
+            builder: (_, value, _) => Row(
+              children: [
+                for (final option in GlassIcon.values) ...[
+                  if (option != GlassIcon.values.first)
+                    const SizedBox(width: 12),
+                  Expanded(
+                    child: _IconOption(
+                      asset: option == GlassIcon.light
+                          ? 'assets/images/icon.png'
+                          : 'assets/images/icon_dark.png',
+                      label: option == GlassIcon.light
+                          ? strings.iconLight
+                          : strings.iconDark,
+                      selected: value == option,
+                      onTap: () async {
+                        await GlassPrefs.setIcon(option);
+                        if (system.isDesktop) {
+                          await ref
+                              .read(systemActionProvider.notifier)
+                              .updateTray();
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            _androidUi ? strings.iconHintAndroid : strings.iconHintDesktop,
+            style: TextStyle(
+              color: GlassColors.textFaint,
+              fontSize: 12,
+              height: 1.35,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _IconOption extends StatelessWidget {
+  const _IconOption({
+    required this.asset,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String asset;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassButton(
+      onTap: onTap,
+      radius: 18,
+      blur: 0,
+      shadow: false,
+      strength: selected ? 1.5 : 0.6,
+      tint: selected ? GlassColors.accent.withValues(alpha: 0.12) : null,
+      padding: const EdgeInsets.fromLTRB(10, 10, 12, 10),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(asset, width: 44, height: 44),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: GlassColors.text,
+                fontSize: 14,
+                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+              ),
+            ),
+          ),
+          AnimatedOpacity(
+            opacity: selected ? 1 : 0,
+            duration: const Duration(milliseconds: 180),
+            child: Icon(
+              Icons.check_circle_rounded,
+              size: 20,
+              color: GlassColors.accent,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class GlassProfilesCard extends ConsumerWidget {
   const GlassProfilesCard({super.key});
 
@@ -338,10 +491,7 @@ class GlassProfilesCard extends ConsumerWidget {
             trailing: count > 1
                 ? Text(
                     '$count',
-                    style: TextStyle(
-                      color: GlassColors.textDim,
-                      fontSize: 13,
-                    ),
+                    style: TextStyle(color: GlassColors.textDim, fontSize: 13),
                   )
                 : null,
           ),
@@ -523,10 +673,18 @@ class _OptionGroup extends StatelessWidget {
 
 /// Settings: big cards for TUN, outbound mode and profiles, then the FlClash tools.
 class GlassSettingsBody extends ConsumerWidget {
-  const GlassSettingsBody({super.key, this.compact = false, this.padding});
+  const GlassSettingsBody({
+    super.key,
+    this.compact = false,
+    this.padding,
+    this.initialOffset = 0,
+  });
 
   final bool compact;
   final EdgeInsets? padding;
+
+  /// Starting scroll position (used by the screenshot harness).
+  final double initialOffset;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -553,6 +711,8 @@ class GlassSettingsBody extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             const GlassProfilesCard(),
+            const SizedBox(height: 12),
+            const GlassAppearanceCard(),
           ]
         : [
             const SizedBox(height: 126, child: GlassTunCard()),
@@ -560,10 +720,15 @@ class GlassSettingsBody extends ConsumerWidget {
             const SizedBox(height: 126, child: GlassModeCard()),
             const SizedBox(height: 12),
             const GlassProfilesCard(),
+            const SizedBox(height: 12),
+            const GlassAppearanceCard(),
           ];
     return Material(
       type: MaterialType.transparency,
       child: ListView(
+        controller: initialOffset > 0
+            ? ScrollController(initialScrollOffset: initialOffset)
+            : null,
         padding: padding ?? EdgeInsets.all(compact ? 14 : 16),
         children: [
           ...cards,
@@ -697,7 +862,9 @@ class GlassSettingsBody extends ConsumerWidget {
 
 /// Full-screen settings route used on Android.
 class GlassSettingsPage extends StatelessWidget {
-  const GlassSettingsPage({super.key});
+  const GlassSettingsPage({super.key, this.initialOffset = 0});
+
+  final double initialOffset;
 
   @override
   Widget build(BuildContext context) {
@@ -738,6 +905,7 @@ class GlassSettingsPage extends StatelessWidget {
             ),
             Expanded(
               child: GlassSettingsBody(
+                initialOffset: initialOffset,
                 padding: EdgeInsets.fromLTRB(
                   16,
                   16,

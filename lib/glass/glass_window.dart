@@ -8,6 +8,7 @@ import 'package:screen_retriever/screen_retriever.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'glass_prefs.dart';
 import 'glass_widgets.dart';
 
 const glassWidgetWidth = 640.0;
@@ -74,6 +75,9 @@ class GlassWindow {
       } catch (_) {
         material = GlassWindowMaterial.none;
       }
+    }
+    if (GlassPrefs.icon.value != GlassIcon.light) {
+      await GlassPrefs.applyIcon();
     }
     try {
       final prefs = await SharedPreferences.getInstance();

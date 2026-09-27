@@ -20,10 +20,11 @@ class ThemeManager extends ConsumerWidget {
     }
     return Consumer(
       builder: (context, ref, _) {
-        // The glass UI is always light, so system bar icons are always dark.
-        const iconBrightness = Brightness.dark;
+        final iconBrightness = Theme.of(context).brightness == Brightness.dark
+            ? Brightness.light
+            : Brightness.dark;
         return AnnotatedRegion<SystemUiOverlayStyle>(
-          value: const SystemUiOverlayStyle(
+          value: SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: iconBrightness,
             systemNavigationBarIconBrightness: iconBrightness,

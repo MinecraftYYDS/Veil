@@ -40,7 +40,14 @@ class DelayBadge extends ConsumerWidget {
         style: TextStyle(color: GlassColors.textFaint, fontSize: 13),
       );
     }
-    final color = delay < 0
+    // Dark mode stays colourless: latency reads as brightness instead of hue.
+    final color = glassDark
+        ? (delay < 0
+              ? GlassColors.textFaint
+              : delay < 320
+              ? GlassColors.text
+              : GlassColors.textDim)
+        : delay < 0
         ? const Color(0xFFE5484D)
         : delay < 160
         ? const Color(0xFF119C68)
@@ -93,11 +100,7 @@ class RegionNodeList extends StatelessWidget {
       _NodeRow(
         height: itemHeight,
         selected: selectedNode == null,
-        leading: Icon(
-          Icons.bolt_rounded,
-          size: 18,
-          color: GlassColors.glow,
-        ),
+        leading: Icon(Icons.bolt_rounded, size: 18, color: GlassColors.glow),
         title: strings.autoBest,
         trailing: null,
         onTap: () => onSelect(null),
@@ -261,21 +264,21 @@ class GlassPrimaryButton extends StatelessWidget {
       height: height,
       radius: height / 2,
       strength: 1.4,
-      tint: GlassColors.accent.withValues(alpha: 0.82),
+      tint: GlassColors.primaryFill,
       child: Center(
         child: busy
-            ? const SizedBox(
+            ? SizedBox(
                 width: 18,
                 height: 18,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: Colors.white,
+                  color: GlassColors.onPrimary,
                 ),
               )
             : Text(
                 label,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: GlassColors.onPrimary,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.4,
@@ -409,7 +412,7 @@ class _GlassPlayButtonState extends ConsumerState<GlassPlayButton>
                   size: widget.size * 0.4,
                   color: Color.lerp(
                     GlassColors.text,
-                    const Color(0xFF0E8A5F),
+                    GlassColors.playActive,
                     t,
                   )!,
                 ),

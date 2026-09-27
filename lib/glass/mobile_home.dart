@@ -367,11 +367,7 @@ class _NodePill extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.dns_rounded,
-                size: 16,
-                color: GlassColors.textDim,
-              ),
+              Icon(Icons.dns_rounded, size: 16, color: GlassColors.textDim),
               const SizedBox(width: 8),
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 200),
@@ -460,7 +456,12 @@ class _Header extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                       height: 1.15,
                       shadows: [
-                        Shadow(color: Color(0xCCFFFFFF), blurRadius: 18),
+                        Shadow(
+                          color: glassDark
+                              ? const Color(0x99000000)
+                              : const Color(0xCCFFFFFF),
+                          blurRadius: 18,
+                        ),
                       ],
                     ),
                   ),
