@@ -460,7 +460,7 @@ class _Header extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                       height: 1.15,
                       shadows: [
-                        Shadow(color: Color(0x668FD3FF), blurRadius: 24),
+                        Shadow(color: Color(0xCCFFFFFF), blurRadius: 18),
                       ],
                     ),
                   ),

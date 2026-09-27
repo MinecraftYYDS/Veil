@@ -2,6 +2,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'desktop_home.dart';
+import 'glass_widgets.dart';
 import 'mobile_home.dart';
 
 class GlassHome extends StatelessWidget {
@@ -9,6 +10,7 @@ class GlassHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (system.isDesktop) configureGlassForDesktop();
     return system.isDesktop
         ? const DesktopGlassHome()
         : const MobileGlassHome();
@@ -16,37 +18,37 @@ class GlassHome extends StatelessWidget {
 }
 
 ThemeData glassTheme(ThemeData base) {
-  const scheme = ColorScheme.dark(
-    primary: Color(0xFF9CD4FF),
-    onPrimary: Color(0xFF06223A),
-    primaryContainer: Color(0xFF1F3A5C),
-    onPrimaryContainer: Color(0xFFD6ECFF),
-    secondary: Color(0xFFB7C6E8),
-    secondaryContainer: Color(0xFF2A3350),
-    onSecondaryContainer: Color(0xFFDDE5FF),
-    tertiary: Color(0xFF7CF2C8),
-    tertiaryContainer: Color(0xFF1C4A40),
-    surface: Color(0xFF0D1122),
-    surfaceContainerLowest: Color(0xFF080B17),
-    surfaceContainerLow: Color(0xFF11162B),
-    surfaceContainer: Color(0xFF151B33),
-    surfaceContainerHigh: Color(0xFF1A213D),
-    surfaceContainerHighest: Color(0xFF212946),
-    onSurface: Color(0xFFE8ECF8),
-    onSurfaceVariant: Color(0xFFB4BCD4),
-    outline: Color(0xFF4A5372),
-    outlineVariant: Color(0xFF2C3450),
+  const scheme = ColorScheme.light(
+    primary: Color(0xFF2F7CF6),
+    onPrimary: Color(0xFFFFFFFF),
+    primaryContainer: Color(0xFFDCE8FF),
+    onPrimaryContainer: Color(0xFF0B2A5C),
+    secondary: Color(0xFF55627E),
+    secondaryContainer: Color(0xFFE3E8F4),
+    onSecondaryContainer: Color(0xFF1B2233),
+    tertiary: Color(0xFF1FB57F),
+    tertiaryContainer: Color(0xFFD5F5E8),
+    surface: Color(0xFFF5F7FC),
+    surfaceContainerLowest: Color(0xFFFFFFFF),
+    surfaceContainerLow: Color(0xFFF9FAFE),
+    surfaceContainer: Color(0xFFF0F3FA),
+    surfaceContainerHigh: Color(0xFFEAEEF7),
+    surfaceContainerHighest: Color(0xFFE3E8F3),
+    onSurface: Color(0xFF1B2233),
+    onSurfaceVariant: Color(0xFF566079),
+    outline: Color(0xFFB4BCCE),
+    outlineVariant: Color(0xFFDDE2EC),
   );
   return base.copyWith(
     colorScheme: scheme,
     scaffoldBackgroundColor: scheme.surface,
     canvasColor: scheme.surface,
     cardTheme: base.cardTheme.copyWith(
-      color: scheme.surfaceContainer,
+      color: scheme.surfaceContainerLowest,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
     dialogTheme: base.dialogTheme.copyWith(
-      backgroundColor: scheme.surfaceContainerHigh,
+      backgroundColor: scheme.surfaceContainerLowest,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
     ),
     filledButtonTheme: FilledButtonThemeData(

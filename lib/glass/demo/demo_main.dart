@@ -16,6 +16,7 @@ import '../desktop_home.dart';
 import '../glass_home.dart';
 import '../glass_settings.dart';
 import '../glass_state.dart';
+import '../glass_widgets.dart';
 import '../glass_window.dart';
 import '../mobile_home.dart';
 
@@ -163,6 +164,7 @@ Future<void> main(List<String> args) async {
 
   final scene = _scenes[arg('scene', 'desktop_map')]!;
   glassMobileLayout = scene.phone;
+  if (!scene.phone) configureGlassForDesktop();
   final locale = arg('locale', 'zh_CN');
   final out = arg('out', '');
   final delayMs = int.parse(arg('delay', '1800'));
@@ -223,7 +225,7 @@ Future<void> main(List<String> args) async {
           ...GlobalMaterialLocalizations.delegates,
         ],
         theme: glassTheme(
-          ThemeData(useMaterial3: true, brightness: Brightness.dark),
+          ThemeData(useMaterial3: true, brightness: Brightness.light),
         ),
         home: Align(
           alignment: Alignment.topLeft,
@@ -291,7 +293,7 @@ class _StatusBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const style = TextStyle(
-      color: Colors.white,
+      color: GlassColors.text,
       fontSize: 15,
       fontWeight: FontWeight.w600,
     );
@@ -303,15 +305,15 @@ class _StatusBar extends StatelessWidget {
           Spacer(),
           Icon(
             Icons.signal_cellular_alt_rounded,
-            color: Colors.white,
+            color: GlassColors.text,
             size: 17,
           ),
           SizedBox(width: 5),
-          Icon(Icons.wifi_rounded, color: Colors.white, size: 17),
+          Icon(Icons.wifi_rounded, color: GlassColors.text, size: 17),
           SizedBox(width: 5),
-          Icon(Icons.vpn_key_rounded, color: Colors.white, size: 14),
+          Icon(Icons.vpn_key_rounded, color: GlassColors.text, size: 14),
           SizedBox(width: 6),
-          Icon(Icons.battery_full_rounded, color: Colors.white, size: 18),
+          Icon(Icons.battery_full_rounded, color: GlassColors.text, size: 18),
         ],
       ),
     );
@@ -335,19 +337,7 @@ class _DesktopStage extends StatelessWidget {
           top: 60,
           width: glassWidgetWidth,
           height: height,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(26),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x73000000),
-                  blurRadius: 50,
-                  offset: Offset(0, 24),
-                ),
-              ],
-            ),
-            child: child,
-          ),
+          child: child,
         ),
       ],
     );
@@ -357,56 +347,73 @@ class _DesktopStage extends StatelessWidget {
 class _WallpaperPainter extends CustomPainter {
   const _WallpaperPainter();
 
+  static final bool _dark = Platform.environment['GLASS_WALLPAPER'] == 'dark';
+
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
     canvas.drawRect(
       rect,
       Paint()
-        ..shader = const LinearGradient(
+        ..shader = LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF1B1446), Color(0xFF0B1D3A), Color(0xFF071019)],
+          colors: _dark
+              ? const [Color(0xFF1B1446), Color(0xFF0B1D3A), Color(0xFF071019)]
+              : const [Color(0xFFE3ECFA), Color(0xFFBCD0F2), Color(0xFF93AEE3)],
         ).createShader(rect),
     );
-    void blob(Offset c, double r, List<Color> colors) {
+    void blob(Offset c, double r, Color color) {
       canvas.drawCircle(
         c,
         r,
         Paint()
           ..shader = RadialGradient(
-            colors: colors,
+            colors: [color, color.withValues(alpha: 0)],
           ).createShader(Rect.fromCircle(center: c, radius: r)),
       );
     }
 
-    blob(Offset(size.width * 0.18, size.height * 0.2), 260, const [
-      Color(0xFFFF6A88),
-      Color(0x00FF6A88),
-    ]);
-    blob(Offset(size.width * 0.72, size.height * 0.12), 240, const [
-      Color(0xFF6A7BFF),
-      Color(0x006A7BFF),
-    ]);
-    blob(Offset(size.width * 0.86, size.height * 0.62), 300, const [
-      Color(0xFF22D3C5),
-      Color(0x0022D3C5),
-    ]);
-    blob(Offset(size.width * 0.32, size.height * 0.8), 280, const [
-      Color(0xFFFFA24C),
-      Color(0x00FFA24C),
-    ]);
-    final wave = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
-      ..color = Colors.white.withValues(alpha: 0.10);
-    for (var k = 0; k < 7; k++) {
-      final path = Path();
-      for (var x = 0.0; x <= size.width; x += 8) {
-        final y = size.height * (0.3 + k * 0.08) + math.sin(x / 90 + k) * 26;
-        x == 0 ? path.moveTo(x, y) : path.lineTo(x, y);
+    if (_dark) {
+      blob(
+        Offset(size.width * 0.18, size.height * 0.2),
+        260,
+        const Color(0xFFFF6A88),
+      );
+      blob(
+        Offset(size.width * 0.72, size.height * 0.12),
+        240,
+        const Color(0xFF6A7BFF),
+      );
+      blob(
+        Offset(size.width * 0.86, size.height * 0.62),
+        300,
+        const Color(0xFF22D3C5),
+      );
+      blob(
+        Offset(size.width * 0.32, size.height * 0.8),
+        280,
+        const Color(0xFFFFA24C),
+      );
+    } else {
+      // Loosely modelled on the Windows 11 "Bloom" wallpaper.
+      final c = Offset(size.width * 0.62, size.height * 0.58);
+      for (var i = 0; i < 7; i++) {
+        final angle = -math.pi / 2 + (i - 3) * 0.42;
+        final petal = c + Offset(math.cos(angle), math.sin(angle)) * 150;
+        blob(petal, 230, const Color(0xFF2F6BE0).withValues(alpha: 0.55));
       }
-      canvas.drawPath(path, wave);
+      blob(c, 220, const Color(0xFF1C4FC4).withValues(alpha: 0.7));
+      blob(
+        Offset(size.width * 0.1, size.height * 0.15),
+        260,
+        const Color(0xFFFFFFFF),
+      );
+      blob(
+        Offset(size.width * 0.2, size.height * 0.9),
+        240,
+        const Color(0xFFF6C7E4),
+      );
     }
   }
 

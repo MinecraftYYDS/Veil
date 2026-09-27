@@ -41,12 +41,12 @@ class DelayBadge extends ConsumerWidget {
       );
     }
     final color = delay < 0
-        ? const Color(0xFFFF8A80)
+        ? const Color(0xFFE5484D)
         : delay < 160
-        ? const Color(0xFF7CF2B8)
+        ? const Color(0xFF119C68)
         : delay < 320
-        ? const Color(0xFFFFE08A)
-        : const Color(0xFFFFB074);
+        ? const Color(0xFFB88300)
+        : const Color(0xFFDB6B12);
     return Text(
       delay < 0 ? strings.timeout : '$delay ms',
       style: TextStyle(
@@ -150,7 +150,7 @@ class _NodeRow extends StatelessWidget {
       blur: 0,
       shadow: false,
       strength: selected ? 1.5 : 0.55,
-      tint: selected ? GlassColors.accent.withValues(alpha: 0.16) : null,
+      tint: selected ? GlassColors.accent.withValues(alpha: 0.12) : null,
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(
         children: [
@@ -218,14 +218,16 @@ class RegionChips extends StatelessWidget {
             radius: 17,
             blur: 0,
             shadow: false,
-            strength: isSelected ? 1.6 : 0.6,
-            tint: isSelected ? Colors.white.withValues(alpha: 0.14) : null,
+            strength: isSelected ? 1.6 : 0.7,
+            tint: isSelected
+                ? GlassColors.accent.withValues(alpha: 0.14)
+                : null,
             padding: const EdgeInsets.symmetric(horizontal: 14),
             child: Center(
               child: Text(
                 region.key.label(zh: zh),
                 style: TextStyle(
-                  color: isSelected ? GlassColors.text : GlassColors.textDim,
+                  color: isSelected ? GlassColors.accent : GlassColors.textDim,
                   fontSize: 13,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                 ),
@@ -258,8 +260,8 @@ class GlassPrimaryButton extends StatelessWidget {
       onTap: busy ? null : onTap,
       height: height,
       radius: height / 2,
-      strength: 1.5,
-      tint: Colors.white.withValues(alpha: 0.12),
+      strength: 1.4,
+      tint: GlassColors.accent.withValues(alpha: 0.82),
       child: Center(
         child: busy
             ? const SizedBox(
@@ -267,13 +269,13 @@ class GlassPrimaryButton extends StatelessWidget {
                 height: 18,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: GlassColors.text,
+                  color: Colors.white,
                 ),
               )
             : Text(
                 label,
                 style: const TextStyle(
-                  color: GlassColors.text,
+                  color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.4,
@@ -381,7 +383,7 @@ class _GlassPlayButtonState extends ConsumerState<GlassPlayButton>
                     borderRadius: BorderRadius.circular(widget.radius),
                     boxShadow: [
                       BoxShadow(
-                        color: GlassColors.running.withValues(alpha: 0.28 * t),
+                        color: GlassColors.running.withValues(alpha: 0.22 * t),
                         blurRadius: 40,
                         spreadRadius: 4,
                       ),
@@ -397,12 +399,20 @@ class _GlassPlayButtonState extends ConsumerState<GlassPlayButton>
               strength: 1.15 + 0.25 * t,
               tint: Color.lerp(
                 Colors.transparent,
-                GlassColors.running.withValues(alpha: 0.10),
+                GlassColors.running.withValues(alpha: 0.16),
                 t,
               ),
               semanticLabel: widget.running ? strings.stop : strings.start,
               child: Center(
-                child: PlayPauseGlyph(progress: t, size: widget.size * 0.4),
+                child: PlayPauseGlyph(
+                  progress: t,
+                  size: widget.size * 0.4,
+                  color: Color.lerp(
+                    GlassColors.text,
+                    const Color(0xFF0E8A5F),
+                    t,
+                  )!,
+                ),
               ),
             ),
           ],

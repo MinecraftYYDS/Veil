@@ -9,8 +9,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../providers/state.dart';
-
 class ThemeManager extends ConsumerWidget {
   final Widget child;
 
@@ -22,12 +20,10 @@ class ThemeManager extends ConsumerWidget {
     }
     return Consumer(
       builder: (context, ref, _) {
-        final brightness = ref.watch(currentBrightnessProvider);
-        final iconBrightness = brightness == Brightness.light
-            ? Brightness.dark
-            : Brightness.light;
+        // The glass UI is always light, so system bar icons are always dark.
+        const iconBrightness = Brightness.dark;
         return AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle(
+          value: const SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: iconBrightness,
             systemNavigationBarIconBrightness: iconBrightness,

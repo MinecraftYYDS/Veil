@@ -16,13 +16,13 @@ const glassMapHeight = 622.0;
 const glassSettingsHeight = 648.0;
 const _alwaysOnTopKey = 'glass.alwaysOnTop';
 
-/// Set by the screenshot harness: paints a fake desktop and simulated acrylic.
+/// Set by the screenshot harness: paints a fake desktop behind the widget.
 bool glassDemoMode = false;
 
 /// Forces the Android layout decisions (used by the harness on desktop hosts).
 bool glassMobileLayout = false;
 
-enum GlassWindowMaterial { acrylic, transparent, none }
+enum GlassWindowMaterial { transparent, none }
 
 class GlassWindow {
   GlassWindow._();
@@ -46,21 +46,12 @@ class GlassWindow {
     if (_overlays == 0) unawaited(_animateTo(_desired));
   }
 
-  static bool get _isWin11 {
-    if (!Platform.isWindows) return false;
-    final match = RegExp(
-      r'Build (\d+)',
-    ).firstMatch(Platform.operatingSystemVersion);
-    final build = int.tryParse(match?.group(1) ?? '') ?? 0;
-    return build >= 22000;
-  }
-
   static Future<void> init() async {
     if (glassDemoMode) return;
     try {
       await windowManager.setAsFrameless();
       await windowManager.setBackgroundColor(Colors.transparent);
-      await windowManager.setHasShadow(true);
+      await windowManager.setHasShadow(false);
       await windowManager.setResizable(false);
       await windowManager.setMaximizable(false);
       await windowManager.setMinimumSize(
@@ -71,23 +62,15 @@ class GlassWindow {
       );
     } catch (_) {}
     if (Platform.isWindows) {
+      // Fully transparent window: only the glass cards are drawn, floating
+      // straight over the desktop (Windows 10 and 11 alike).
       try {
         await acrylic.Window.initialize();
-        if (_isWin11) {
-          await acrylic.Window.setEffect(
-            effect: acrylic.WindowEffect.acrylic,
-            color: const Color(0x55101426),
-            dark: true,
-          );
-          await windowManager.setWindowCornerPreference(round: true);
-          material = GlassWindowMaterial.acrylic;
-        } else {
-          await acrylic.Window.setEffect(
-            effect: acrylic.WindowEffect.transparent,
-            color: Colors.transparent,
-          );
-          material = GlassWindowMaterial.transparent;
-        }
+        await acrylic.Window.setEffect(
+          effect: acrylic.WindowEffect.transparent,
+          color: Colors.transparent,
+        );
+        material = GlassWindowMaterial.transparent;
       } catch (_) {
         material = GlassWindowMaterial.none;
       }
@@ -175,7 +158,9 @@ class GlassWindow {
   }
 }
 
-/// The window's own glass: real acrylic on Windows 11, painted glass elsewhere.
+/// The window itself stays invisible so the glass cards float over the
+/// desktop. Where per-pixel transparency is unavailable (e.g. Linux), a light
+/// frosted panel keeps the gaps from turning black.
 class GlassWindowFrame extends StatelessWidget {
   const GlassWindowFrame({super.key, required this.child});
 
@@ -183,54 +168,19 @@ class GlassWindowFrame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final material = GlassWindow.material;
-    final radius = material == GlassWindowMaterial.acrylic ? 8.0 : 26.0;
-    final borderRadius = BorderRadius.circular(radius);
-    final Widget fill;
-    if (glassDemoMode) {
-      fill = BackdropFilter(
-        filter: ui.ImageFilter.blur(sigmaX: 34, sigmaY: 34),
-        child: const DecoratedBox(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0x661A2040), Color(0x8C0A0D1C)],
-            ),
-          ),
-        ),
-      );
-    } else if (material == GlassWindowMaterial.acrylic) {
-      fill = const DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0x40182040), Color(0x800A0D1C)],
-          ),
-        ),
-      );
-    } else {
-      fill = const DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xF01A2040), Color(0xF50A0D1C)],
-          ),
-        ),
-      );
+    if (glassDemoMode ||
+        GlassWindow.material == GlassWindowMaterial.transparent) {
+      return child;
     }
+    const radius = 26.0;
     return ClipRRect(
-      borderRadius: borderRadius,
+      borderRadius: BorderRadius.circular(radius),
       child: Stack(
         fit: StackFit.expand,
         children: [
-          fill,
-          if (material != GlassWindowMaterial.acrylic || glassDemoMode)
-            const GlassBackground(opacity: 0.35),
+          const GlassBackground(),
           CustomPaint(
-            foregroundPainter: GlassRimPainter(radius: radius, strength: 0.9),
+            foregroundPainter: const GlassRimPainter(radius: radius),
             child: child,
           ),
         ],

@@ -171,18 +171,18 @@ class ApplicationState extends ConsumerState<Application> {
           title: appName,
           locale: getLocaleForString(locale),
           supportedLocales: AppLocalizations.delegate.supportedLocales,
-          themeMode: ThemeMode.dark,
+          themeMode: ThemeMode.light,
           theme: glassTheme(
             ThemeData(
               useMaterial3: true,
-              brightness: Brightness.dark,
+              brightness: Brightness.light,
               pageTransitionsTheme: _pageTransitionsTheme,
             ).withAppShapes,
           ),
           darkTheme: glassTheme(
             ThemeData(
               useMaterial3: true,
-              brightness: Brightness.dark,
+              brightness: Brightness.light,
               pageTransitionsTheme: _pageTransitionsTheme,
             ).withAppShapes,
           ),

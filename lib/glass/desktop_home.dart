@@ -216,7 +216,7 @@ class _DesktopGlassHomeState extends ConsumerState<DesktopGlassHome> {
                     child: GlassSurface(
                       radius: 24,
                       blur: 0,
-                      strength: 0.7,
+                      strength: 1.1,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(24),
                         child: Navigator(
@@ -267,9 +267,7 @@ class _RegionPill extends StatelessWidget {
             height: 8,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: running
-                  ? GlassColors.running
-                  : Colors.white.withValues(alpha: 0.3),
+              color: running ? GlassColors.running : GlassColors.textFaint,
               boxShadow: running
                   ? [
                       BoxShadow(
@@ -328,7 +326,7 @@ class _MapCard extends StatelessWidget {
     return GlassSurface(
       radius: 24,
       blur: 0,
-      strength: 0.8,
+      strength: 1.25,
       padding: const EdgeInsets.fromLTRB(18, 14, 18, 16),
       child: ListenableBuilder(
         listenable: selection,

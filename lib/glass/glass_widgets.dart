@@ -4,20 +4,35 @@ import 'dart:ui' as ui;
 import 'package:material_ui/material_ui.dart';
 
 abstract final class GlassColors {
-  static const bgTop = Color(0xFF141A33);
-  static const bgMid = Color(0xFF0B0F20);
-  static const bgBottom = Color(0xFF05060D);
-  static const glow = Color(0xFFBFE6FF);
-  static const accent = Color(0xFF7CC8FF);
-  static const running = Color(0xFF6CF2C2);
-  static const text = Color(0xFFFFFFFF);
-  static const textDim = Color(0xB3FFFFFF);
-  static const textFaint = Color(0x73FFFFFF);
+  static const bgTop = Color(0xFFEAF1FF);
+  static const bgMid = Color(0xFFF4F6FC);
+  static const bgBottom = Color(0xFFF3EEF8);
+  static const glow = Color(0xFF8CC8FF);
+  static const accent = Color(0xFF2F7CF6);
+  static const running = Color(0xFF1FB57F);
+  static const text = Color(0xFF1B2233);
+  static const textDim = Color(0xFF566079);
+  static const textFaint = Color(0xFF8D96AB);
+  static const hairline = Color(0x1A1B2540);
+  static const danger = Color(0xFFE5484D);
+}
+
+/// Light liquid-glass look: how milky the fill is. Desktop windows are
+/// transparent and cannot blur the wallpaper, so their glass is milkier.
+double glassMilk = 1;
+
+/// Backdrop blur only helps where Flutter paints what is behind the glass
+/// (Android). A transparent desktop window has nothing to blur.
+bool glassBlur = true;
+
+void configureGlassForDesktop() {
+  glassBlur = false;
+  glassMilk = 1.45;
 }
 
 const glassTabular = [ui.FontFeature.tabularFigures()];
 
-/// Moody backdrop the glass surfaces refract; soft colour blooms keep the blur visible.
+/// Airy pastel backdrop; soft colour blooms keep the frosted blur visible.
 class GlassBackground extends StatelessWidget {
   const GlassBackground({super.key, this.child, this.opacity = 1});
 
@@ -73,17 +88,17 @@ class _BackgroundPainter extends CustomPainter {
     bloom(
       Offset(size.width * 0.12, size.height * 0.08),
       s * 0.9,
-      const Color(0x553B4DFF),
+      const Color(0x669CC2FF),
     );
     bloom(
       Offset(size.width * 0.95, size.height * 0.35),
       s * 0.8,
-      const Color(0x40B04DFF),
+      const Color(0x55F5B8E6),
     );
     bloom(
       Offset(size.width * 0.3, size.height * 1.02),
       s * 0.9,
-      const Color(0x3326C6DA),
+      const Color(0x5596E6D6),
     );
   }
 
@@ -130,9 +145,15 @@ class GlassSurface extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.white.withValues(alpha: 0.20 * s),
-              Colors.white.withValues(alpha: 0.07 * s),
-              Colors.white.withValues(alpha: 0.11 * s),
+              Colors.white.withValues(
+                alpha: math.min(0.96, 0.62 * s * glassMilk),
+              ),
+              Colors.white.withValues(
+                alpha: math.min(0.9, 0.42 * s * glassMilk),
+              ),
+              Colors.white.withValues(
+                alpha: math.min(0.92, 0.48 * s * glassMilk),
+              ),
             ],
             stops: const [0, 0.55, 1],
           ),
@@ -143,7 +164,7 @@ class GlassSurface extends StatelessWidget {
         ),
       ),
     );
-    if (blur > 0) {
+    if (blur > 0 && glassBlur) {
       content = BackdropFilter(
         filter: ui.ImageFilter.blur(sigmaX: blur, sigmaY: blur),
         child: content,
@@ -156,14 +177,14 @@ class GlassSurface extends StatelessWidget {
           borderRadius: borderRadius,
           boxShadow: const [
             BoxShadow(
-              color: Color(0x40000000),
-              blurRadius: 28,
+              color: Color(0x2E2A3B66),
+              blurRadius: 30,
               offset: Offset(0, 14),
-              spreadRadius: -6,
+              spreadRadius: -8,
             ),
             BoxShadow(
-              color: Color(0x26000000),
-              blurRadius: 6,
+              color: Color(0x1A1B2540),
+              blurRadius: 8,
               offset: Offset(0, 2),
             ),
           ],
@@ -193,7 +214,14 @@ class GlassRimPainter extends CustomPainter {
     );
     final s = strength.clamp(0.0, 1.6);
     canvas.drawRRect(
-      rrect,
+      RRect.fromRectAndRadius(rect.deflate(0.3), Radius.circular(radius)),
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.8
+        ..color = GlassColors.hairline,
+    );
+    canvas.drawRRect(
+      rrect.deflate(0.6),
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.2
@@ -201,10 +229,10 @@ class GlassRimPainter extends CustomPainter {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.white.withValues(alpha: math.min(1, 0.75 * s)),
-            Colors.white.withValues(alpha: 0.10 * s),
-            Colors.white.withValues(alpha: 0.06 * s),
-            Colors.white.withValues(alpha: 0.38 * s),
+            Colors.white.withValues(alpha: math.min(1, 0.95 * s)),
+            Colors.white.withValues(alpha: math.min(1, 0.45 * s)),
+            Colors.white.withValues(alpha: math.min(1, 0.25 * s)),
+            Colors.white.withValues(alpha: math.min(1, 0.8 * s)),
           ],
           stops: const [0, 0.35, 0.65, 1],
         ).createShader(rect),
@@ -224,7 +252,7 @@ class GlassRimPainter extends CustomPainter {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.white.withValues(alpha: 0.11 * s),
+            Colors.white.withValues(alpha: math.min(1, 0.45 * s)),
             Colors.white.withValues(alpha: 0),
           ],
         ).createShader(highlight),
@@ -277,7 +305,7 @@ class _GlassButtonState extends State<GlassButton> {
   @override
   Widget build(BuildContext context) {
     final enabled = widget.onTap != null;
-    final strength = widget.strength * (_pressed ? 1.35 : (_hover ? 1.2 : 1));
+    final strength = widget.strength * (_pressed ? 1.3 : (_hover ? 1.15 : 1));
     return Semantics(
       button: true,
       label: widget.semanticLabel,
@@ -460,7 +488,7 @@ class _PlayPausePainter extends CustomPainter {
       canvas.translate(w / 2, h / 2);
       canvas.scale(scale);
       canvas.translate(-w / 2, -h / 2);
-      canvas.drawPath(p, glow..color = color.withValues(alpha: 0.4 * opacity));
+      canvas.drawPath(p, glow..color = color.withValues(alpha: 0.22 * opacity));
       canvas.drawPath(p, paint..color = color.withValues(alpha: opacity));
       canvas.restore();
     }
@@ -541,7 +569,7 @@ class SpeedBar extends StatelessWidget {
             HalfArrowIcon(
               up: isUp,
               size: fontSize * 1.08,
-              color: isUp ? const Color(0xFFFFFFFF) : const Color(0xFFFFFFFF),
+              color: isUp ? GlassColors.accent : GlassColors.running,
             ),
             SizedBox(width: fontSize * 0.45),
             Flexible(
@@ -565,7 +593,7 @@ class SpeedBar extends StatelessWidget {
           Container(
             width: 1,
             height: height * 0.42,
-            color: Colors.white.withValues(alpha: 0.16),
+            color: GlassColors.hairline,
           ),
           item(false, down),
         ],

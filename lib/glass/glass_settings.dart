@@ -51,10 +51,10 @@ class GlassSwitch extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(height / 2),
             color: value
-                ? GlassColors.running.withValues(alpha: 0.42)
-                : Colors.white.withValues(alpha: 0.12),
+                ? GlassColors.running.withValues(alpha: 0.85)
+                : const Color(0xFF8D96AB).withValues(alpha: 0.28),
             border: Border.all(
-              color: Colors.white.withValues(alpha: value ? 0.5 : 0.22),
+              color: Colors.white.withValues(alpha: value ? 0.7 : 0.6),
             ),
           ),
           child: AnimatedAlign(
@@ -70,13 +70,13 @@ class GlassSwitch extends StatelessWidget {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.25),
+                    color: const Color(0xFF1B2540).withValues(alpha: 0.22),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
                   if (value)
                     BoxShadow(
-                      color: GlassColors.running.withValues(alpha: 0.6),
+                      color: GlassColors.running.withValues(alpha: 0.35),
                       blurRadius: 10,
                     ),
                 ],
@@ -113,8 +113,8 @@ class GlassSegmented<T> extends StatelessWidget {
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(height / 2),
-        color: Colors.black.withValues(alpha: 0.18),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
+        color: const Color(0xFF5B6B8C).withValues(alpha: 0.12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.6)),
       ),
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -133,7 +133,7 @@ class GlassSegmented<T> extends StatelessWidget {
                   blur: 0,
                   shadow: false,
                   strength: 1.6,
-                  tint: Colors.white.withValues(alpha: 0.12),
+                  tint: Colors.white.withValues(alpha: 0.7),
                   child: const SizedBox.expand(),
                 ),
               ),
@@ -149,7 +149,7 @@ class GlassSegmented<T> extends StatelessWidget {
                             labelOf(v),
                             style: TextStyle(
                               color: v == value
-                                  ? GlassColors.text
+                                  ? GlassColors.accent
                                   : GlassColors.textDim,
                               fontSize: 14,
                               fontWeight: v == value
@@ -186,10 +186,10 @@ class _CardHeader extends StatelessWidget {
           height: 34,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(11),
-            color: Colors.white.withValues(alpha: 0.12),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+            color: GlassColors.accent.withValues(alpha: 0.12),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.7)),
           ),
-          child: Icon(icon, size: 19, color: GlassColors.text),
+          child: Icon(icon, size: 19, color: GlassColors.accent),
         ),
         const SizedBox(width: 10),
         Expanded(
@@ -376,8 +376,10 @@ class GlassProfilesCard extends ConsumerWidget {
               child: LinearProgressIndicator(
                 value: (used / total).clamp(0.0, 1.0),
                 minHeight: 5,
-                backgroundColor: Colors.white.withValues(alpha: 0.12),
-                color: GlassColors.glow,
+                backgroundColor: const Color(
+                  0xFF5B6B8C,
+                ).withValues(alpha: 0.14),
+                color: GlassColors.accent,
               ),
             ),
           ],
@@ -506,11 +508,11 @@ class _OptionGroup extends StatelessWidget {
           for (var i = 0; i < children.length; i++) ...[
             children[i],
             if (i != children.length - 1)
-              Divider(
+              const Divider(
                 height: 1,
                 indent: 48,
                 endIndent: 14,
-                color: Colors.white.withValues(alpha: 0.08),
+                color: GlassColors.hairline,
               ),
           ],
         ],

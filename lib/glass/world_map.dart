@@ -230,22 +230,22 @@ class _WorldMapPainter extends CustomPainter {
     canvas.drawPoints(
       ui.PointMode.points,
       dim,
-      dots(Colors.white.withValues(alpha: 0.17), dotSize),
+      dots(const Color(0xFF5B6B8C).withValues(alpha: 0.2), dotSize),
     );
     if (lit.isNotEmpty) {
       canvas.drawPoints(
         ui.PointMode.points,
         lit,
         dots(
-          GlassColors.glow.withValues(alpha: 0.35),
-          dotSize * 2.2,
-          dotSize * 1.2,
+          GlassColors.glow.withValues(alpha: 0.55),
+          dotSize * 2.4,
+          dotSize * 1.3,
         ),
       );
       canvas.drawPoints(
         ui.PointMode.points,
         lit,
-        dots(Colors.white.withValues(alpha: 0.72), dotSize),
+        dots(Colors.white, dotSize * 1.05),
       );
     }
     if (hot.isNotEmpty) {
@@ -253,7 +253,7 @@ class _WorldMapPainter extends CustomPainter {
         ui.PointMode.points,
         hot,
         dots(
-          GlassColors.accent.withValues(alpha: 0.55),
+          GlassColors.accent.withValues(alpha: 0.6),
           dotSize * 2.8,
           dotSize * 1.6,
         ),
@@ -275,10 +275,19 @@ class _WorldMapPainter extends CustomPainter {
         base * 3.2,
         Paint()
           ..color = (isSelected ? GlassColors.accent : GlassColors.glow)
-              .withValues(alpha: isSelected ? 0.55 : 0.32)
+              .withValues(alpha: isSelected ? 0.7 : 0.75)
           ..maskFilter = MaskFilter.blur(BlurStyle.normal, base * 2.2),
       );
       canvas.drawCircle(p, base, Paint()..color = Colors.white);
+      canvas.drawCircle(
+        p,
+        base + 0.6,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1
+          ..color = (isSelected ? GlassColors.accent : GlassColors.glow)
+              .withValues(alpha: 0.9),
+      );
       if (isSelected) {
         for (final phase in [0.0, 0.5]) {
           final k = (t + phase) % 1.0;
@@ -288,7 +297,7 @@ class _WorldMapPainter extends CustomPainter {
             Paint()
               ..style = PaintingStyle.stroke
               ..strokeWidth = 1.3
-              ..color = Colors.white.withValues(alpha: (1 - k) * 0.7),
+              ..color = GlassColors.accent.withValues(alpha: (1 - k) * 0.6),
           );
         }
       }
