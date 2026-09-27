@@ -197,7 +197,7 @@ class _CardHeader extends StatelessWidget {
             title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               color: GlassColors.text,
               fontSize: 17,
               fontWeight: FontWeight.w700,
@@ -237,7 +237,7 @@ class GlassTunCard extends ConsumerWidget {
             _androidUi ? strings.tunHintAndroid : strings.tunHintDesktop,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               color: GlassColors.textDim,
               fontSize: 13,
               height: 1.35,
@@ -314,7 +314,7 @@ class GlassProfilesCard extends ConsumerWidget {
               const SizedBox(width: 6),
               Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   color: GlassColors.text,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -338,7 +338,7 @@ class GlassProfilesCard extends ConsumerWidget {
             trailing: count > 1
                 ? Text(
                     '$count',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: GlassColors.textDim,
                       fontSize: 13,
                     ),
@@ -352,7 +352,7 @@ class GlassProfilesCard extends ConsumerWidget {
                 : (profile == null ? strings.noProfile : profile.url),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               color: GlassColors.text,
               fontSize: 15,
               fontWeight: FontWeight.w600,
@@ -363,7 +363,7 @@ class GlassProfilesCard extends ConsumerWidget {
             subtitle.isEmpty ? strings.profilesCardHint : subtitle,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               color: GlassColors.textDim,
               fontSize: 12.5,
               fontFeatures: glassTabular,
@@ -473,7 +473,7 @@ class _OptionRow extends StatelessWidget {
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: GlassColors.text,
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
@@ -481,7 +481,7 @@ class _OptionRow extends StatelessWidget {
                 ),
               ),
               trailing ??
-                  const Icon(
+                  Icon(
                     Icons.chevron_right_rounded,
                     color: GlassColors.textFaint,
                   ),
@@ -508,7 +508,7 @@ class _OptionGroup extends StatelessWidget {
           for (var i = 0; i < children.length; i++) ...[
             children[i],
             if (i != children.length - 1)
-              const Divider(
+              Divider(
                 height: 1,
                 indent: 48,
                 endIndent: 14,
@@ -681,7 +681,7 @@ class GlassSettingsBody extends ConsumerWidget {
             child: Text(
               strings.license,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 color: GlassColors.textFaint,
                 fontSize: 11.5,
                 height: 1.4,
@@ -718,7 +718,7 @@ class GlassSettingsPage extends StatelessWidget {
                     width: 44,
                     height: 44,
                     radius: 14,
-                    child: const Icon(
+                    child: Icon(
                       Icons.arrow_back_rounded,
                       color: GlassColors.text,
                       size: 22,
@@ -727,7 +727,7 @@ class GlassSettingsPage extends StatelessWidget {
                   const SizedBox(width: 14),
                   Text(
                     strings.settings,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: GlassColors.text,
                       fontSize: 24,
                       fontWeight: FontWeight.w700,

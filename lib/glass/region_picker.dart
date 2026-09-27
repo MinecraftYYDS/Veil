@@ -25,7 +25,7 @@ class DelayBadge extends ConsumerWidget {
     final delay = ref.watch(glassDelayProvider((name, testUrl)));
     final strings = GlassStrings.of(context);
     if (delay == 0) {
-      return const SizedBox(
+      return SizedBox(
         width: 14,
         height: 14,
         child: CircularProgressIndicator(
@@ -35,7 +35,7 @@ class DelayBadge extends ConsumerWidget {
       );
     }
     if (delay == null) {
-      return const Text(
+      return Text(
         '—',
         style: TextStyle(color: GlassColors.textFaint, fontSize: 13),
       );
@@ -85,7 +85,7 @@ class RegionNodeList extends StatelessWidget {
       return Center(
         child: Text(
           strings.noRegions,
-          style: const TextStyle(color: GlassColors.textDim, fontSize: 13),
+          style: TextStyle(color: GlassColors.textDim, fontSize: 13),
         ),
       );
     }
@@ -93,7 +93,7 @@ class RegionNodeList extends StatelessWidget {
       _NodeRow(
         height: itemHeight,
         selected: selectedNode == null,
-        leading: const Icon(
+        leading: Icon(
           Icons.bolt_rounded,
           size: 18,
           color: GlassColors.glow,
@@ -172,7 +172,7 @@ class _NodeRow extends StatelessWidget {
               width: 6,
               height: 6,
               margin: const EdgeInsets.only(right: 10),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: GlassColors.running,
                 shape: BoxShape.circle,
               ),
@@ -180,7 +180,7 @@ class _NodeRow extends StatelessWidget {
           ?trailing,
           if (selected) ...[
             const SizedBox(width: 10),
-            const Icon(Icons.check_rounded, size: 18, color: GlassColors.text),
+            Icon(Icons.check_rounded, size: 18, color: GlassColors.text),
           ],
         ],
       ),

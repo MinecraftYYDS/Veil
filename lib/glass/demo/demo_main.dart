@@ -292,12 +292,12 @@ class _StatusBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const style = TextStyle(
+    final style = TextStyle(
       color: GlassColors.text,
       fontSize: 15,
       fontWeight: FontWeight.w600,
     );
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.fromLTRB(30, 14, 26, 0),
       child: Row(
         children: [

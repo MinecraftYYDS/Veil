@@ -165,7 +165,7 @@ class _DesktopGlassHomeState extends ConsumerState<DesktopGlassHome> {
                                         duration: const Duration(
                                           milliseconds: 300,
                                         ),
-                                        child: const Icon(
+                                        child: Icon(
                                           Icons.settings_rounded,
                                           color: GlassColors.text,
                                           size: 28,
@@ -284,7 +284,7 @@ class _RegionPill extends StatelessWidget {
               text,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 color: GlassColors.text,
                 fontSize: 19,
                 fontWeight: FontWeight.w600,
@@ -295,7 +295,7 @@ class _RegionPill extends StatelessWidget {
           AnimatedRotation(
             turns: expanded ? 0.5 : 0,
             duration: const Duration(milliseconds: 240),
-            child: const Icon(
+            child: Icon(
               Icons.keyboard_arrow_down_rounded,
               color: GlassColors.textDim,
               size: 28,
@@ -350,7 +350,7 @@ class _MapCard extends StatelessWidget {
                         key: ValueKey(selection.region),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: GlassColors.text,
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
@@ -362,7 +362,7 @@ class _MapCard extends StatelessWidget {
                     region == null
                         ? strings.tapToSwitch
                         : strings.nodes(region.nodes.length),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: GlassColors.textDim,
                       fontSize: 13,
                     ),
@@ -432,7 +432,7 @@ class _HorizontalNodes extends StatelessWidget {
       return Center(
         child: Text(
           strings.noRegions,
-          style: const TextStyle(color: GlassColors.textDim, fontSize: 13),
+          style: TextStyle(color: GlassColors.textDim, fontSize: 13),
         ),
       );
     }
@@ -459,7 +459,7 @@ class _HorizontalNodes extends StatelessWidget {
       );
     }
 
-    const titleStyle = TextStyle(
+    final titleStyle = TextStyle(
       color: GlassColors.text,
       fontSize: 13,
       fontWeight: FontWeight.w600,
@@ -473,7 +473,7 @@ class _HorizontalNodes extends StatelessWidget {
           title: Text(strings.autoBest.split(' · ').first, style: titleStyle),
           subtitle: Text(
             strings.autoBest.split(' · ').last,
-            style: const TextStyle(color: GlassColors.textDim, fontSize: 12),
+            style: TextStyle(color: GlassColors.textDim, fontSize: 12),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -497,7 +497,7 @@ class _HorizontalNodes extends StatelessWidget {
                   Container(
                     width: 6,
                     height: 6,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       color: GlassColors.running,
                       shape: BoxShape.circle,
                     ),

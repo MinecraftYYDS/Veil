@@ -180,7 +180,7 @@ class GlassWindowFrame extends StatelessWidget {
         children: [
           const GlassBackground(),
           CustomPaint(
-            foregroundPainter: const GlassRimPainter(radius: radius),
+            foregroundPainter: GlassRimPainter(radius: radius),
             child: child,
           ),
         ],

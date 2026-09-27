@@ -3,18 +3,51 @@ import 'dart:ui' as ui;
 
 import 'package:material_ui/material_ui.dart';
 
+/// Whether the glass UI currently renders its dark (neutral graphite) look.
+/// Set by [GlassThemeScope]; widgets read colours through [GlassColors].
+bool glassDark = false;
+
+Color _pick(Color light, Color dark) => glassDark ? dark : light;
+
 abstract final class GlassColors {
-  static const bgTop = Color(0xFFEAF1FF);
-  static const bgMid = Color(0xFFF4F6FC);
-  static const bgBottom = Color(0xFFF3EEF8);
-  static const glow = Color(0xFF8CC8FF);
-  static const accent = Color(0xFF2F7CF6);
-  static const running = Color(0xFF1FB57F);
-  static const text = Color(0xFF1B2233);
-  static const textDim = Color(0xFF566079);
-  static const textFaint = Color(0xFF8D96AB);
-  static const hairline = Color(0x1A1B2540);
-  static const danger = Color(0xFFE5484D);
+  static Color get bgTop => _pick(const Color(0xFFEAF1FF), const Color(0xFF1D1D1D));
+  static Color get bgMid => _pick(const Color(0xFFF4F6FC), const Color(0xFF131313));
+  static Color get bgBottom =>
+      _pick(const Color(0xFFF3EEF8), const Color(0xFF0A0A0A));
+  static Color get glow => _pick(const Color(0xFF8CC8FF), const Color(0xFFFFFFFF));
+  static Color get accent =>
+      _pick(const Color(0xFF2F7CF6), const Color(0xFFEDEDED));
+  static Color get running =>
+      _pick(const Color(0xFF1FB57F), const Color(0xFFF2F2F2));
+  static Color get text => _pick(const Color(0xFF1B2233), const Color(0xFFF2F2F2));
+  static Color get textDim =>
+      _pick(const Color(0xFF566079), const Color(0xFFB4B4B4));
+  static Color get textFaint =>
+      _pick(const Color(0xFF8D96AB), const Color(0xFF7C7C7C));
+  static Color get hairline =>
+      _pick(const Color(0x1A1B2540), const Color(0x1FFFFFFF));
+  static Color get danger =>
+      _pick(const Color(0xFFE5484D), const Color(0xFFD9D9D9));
+
+  /// Neutral ink used for faint map dots and inactive tracks.
+  static Color get ink => _pick(const Color(0xFF5B6B8C), const Color(0xFFFFFFFF));
+
+  /// Filled call-to-action button (Save) and its label.
+  static Color get primaryFill => _pick(
+    const Color(0xFF2F7CF6).withValues(alpha: 0.82),
+    const Color(0xFFF2F2F2).withValues(alpha: 0.88),
+  );
+  static Color get onPrimary =>
+      _pick(const Color(0xFFFFFFFF), const Color(0xFF111111));
+
+  /// Glyph colour of the play button while the proxy runs.
+  static Color get playActive =>
+      _pick(const Color(0xFF0E8A5F), const Color(0xFFFFFFFF));
+
+  static Color get switchOn => _pick(
+    const Color(0xFF1FB57F).withValues(alpha: 0.85),
+    const Color(0xFFBDBDBD),
+  );
 }
 
 /// Light liquid-glass look: how milky the fill is. Desktop windows are
@@ -52,6 +85,7 @@ class _BackgroundPainter extends CustomPainter {
   _BackgroundPainter(this.opacity);
 
   final double opacity;
+  final bool dark = glassDark;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -85,6 +119,25 @@ class _BackgroundPainter extends CustomPainter {
     }
 
     final s = size.shortestSide;
+    if (dark) {
+      // Neutral light pools only: the dark look stays free of colour casts.
+      bloom(
+        Offset(size.width * 0.15, size.height * 0.06),
+        s * 0.9,
+        const Color(0x14FFFFFF),
+      );
+      bloom(
+        Offset(size.width * 0.95, size.height * 0.4),
+        s * 0.8,
+        const Color(0x0DFFFFFF),
+      );
+      bloom(
+        Offset(size.width * 0.3, size.height * 1.02),
+        s * 0.9,
+        const Color(0x0FFFFFFF),
+      );
+      return;
+    }
     bloom(
       Offset(size.width * 0.12, size.height * 0.08),
       s * 0.9,
@@ -104,7 +157,7 @@ class _BackgroundPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_BackgroundPainter oldDelegate) =>
-      oldDelegate.opacity != opacity;
+      oldDelegate.opacity != opacity || oldDelegate.dark != dark;
 }
 
 /// Frosted panel: backdrop blur, faint white fill, specular rim and a soft drop shadow.
@@ -144,17 +197,29 @@ class GlassSurface extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Colors.white.withValues(
-                alpha: math.min(0.96, 0.62 * s * glassMilk),
-              ),
-              Colors.white.withValues(
-                alpha: math.min(0.9, 0.42 * s * glassMilk),
-              ),
-              Colors.white.withValues(
-                alpha: math.min(0.92, 0.48 * s * glassMilk),
-              ),
-            ],
+            colors: glassDark
+                ? [
+                    const Color(0xFF2E2E2E).withValues(
+                      alpha: math.min(0.94, 0.5 * s * glassMilk),
+                    ),
+                    const Color(0xFF161616).withValues(
+                      alpha: math.min(0.9, 0.4 * s * glassMilk),
+                    ),
+                    const Color(0xFF222222).withValues(
+                      alpha: math.min(0.92, 0.46 * s * glassMilk),
+                    ),
+                  ]
+                : [
+                    Colors.white.withValues(
+                      alpha: math.min(0.96, 0.62 * s * glassMilk),
+                    ),
+                    Colors.white.withValues(
+                      alpha: math.min(0.9, 0.42 * s * glassMilk),
+                    ),
+                    Colors.white.withValues(
+                      alpha: math.min(0.92, 0.48 * s * glassMilk),
+                    ),
+                  ],
             stops: const [0, 0.55, 1],
           ),
         ),
@@ -175,19 +240,33 @@ class GlassSurface extends StatelessWidget {
       content = DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: borderRadius,
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x2E2A3B66),
-              blurRadius: 30,
-              offset: Offset(0, 14),
-              spreadRadius: -8,
-            ),
-            BoxShadow(
-              color: Color(0x1A1B2540),
-              blurRadius: 8,
-              offset: Offset(0, 2),
-            ),
-          ],
+          boxShadow: glassDark
+              ? const [
+                  BoxShadow(
+                    color: Color(0x66000000),
+                    blurRadius: 30,
+                    offset: Offset(0, 14),
+                    spreadRadius: -8,
+                  ),
+                  BoxShadow(
+                    color: Color(0x40000000),
+                    blurRadius: 8,
+                    offset: Offset(0, 2),
+                  ),
+                ]
+              : const [
+                  BoxShadow(
+                    color: Color(0x2E2A3B66),
+                    blurRadius: 30,
+                    offset: Offset(0, 14),
+                    spreadRadius: -8,
+                  ),
+                  BoxShadow(
+                    color: Color(0x1A1B2540),
+                    blurRadius: 8,
+                    offset: Offset(0, 2),
+                  ),
+                ],
         ),
         child: content,
       );
@@ -200,10 +279,11 @@ class GlassSurface extends StatelessWidget {
 }
 
 class GlassRimPainter extends CustomPainter {
-  const GlassRimPainter({required this.radius, this.strength = 1});
+  GlassRimPainter({required this.radius, this.strength = 1});
 
   final double radius;
   final double strength;
+  final bool dark = glassDark;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -213,6 +293,8 @@ class GlassRimPainter extends CustomPainter {
       Radius.circular(radius),
     );
     final s = strength.clamp(0.0, 1.6);
+    // Dark glass keeps a dimmer, still bright-edged rim.
+    final k = dark ? 0.42 : 1.0;
     canvas.drawRRect(
       RRect.fromRectAndRadius(rect.deflate(0.3), Radius.circular(radius)),
       Paint()
@@ -229,10 +311,10 @@ class GlassRimPainter extends CustomPainter {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.white.withValues(alpha: math.min(1, 0.95 * s)),
-            Colors.white.withValues(alpha: math.min(1, 0.45 * s)),
-            Colors.white.withValues(alpha: math.min(1, 0.25 * s)),
-            Colors.white.withValues(alpha: math.min(1, 0.8 * s)),
+            Colors.white.withValues(alpha: math.min(1, 0.95 * s * k)),
+            Colors.white.withValues(alpha: math.min(1, 0.45 * s * k * k)),
+            Colors.white.withValues(alpha: math.min(1, 0.25 * s * k * k)),
+            Colors.white.withValues(alpha: math.min(1, 0.8 * s * k)),
           ],
           stops: const [0, 0.35, 0.65, 1],
         ).createShader(rect),
@@ -252,7 +334,9 @@ class GlassRimPainter extends CustomPainter {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.white.withValues(alpha: math.min(1, 0.45 * s)),
+            Colors.white.withValues(
+              alpha: math.min(1, (dark ? 0.08 : 0.45) * s),
+            ),
             Colors.white.withValues(alpha: 0),
           ],
         ).createShader(highlight),
@@ -262,7 +346,9 @@ class GlassRimPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(GlassRimPainter oldDelegate) =>
-      oldDelegate.radius != radius || oldDelegate.strength != strength;
+      oldDelegate.radius != radius ||
+      oldDelegate.strength != strength ||
+      oldDelegate.dark != dark;
 }
 
 /// Pressable glass surface with hover lift and press squish.
@@ -351,13 +437,13 @@ class HalfArrowIcon extends StatelessWidget {
     super.key,
     required this.up,
     this.size = 16,
-    this.color = GlassColors.text,
+    this.color,
     this.strokeWidth = 1.9,
   });
 
   final bool up;
   final double size;
-  final Color color;
+  final Color? color;
   final double strokeWidth;
 
   @override
@@ -366,7 +452,7 @@ class HalfArrowIcon extends StatelessWidget {
       size: Size(size * 0.62, size),
       painter: _HalfArrowPainter(
         up: up,
-        color: color,
+        color: color ?? GlassColors.text,
         strokeWidth: strokeWidth,
       ),
     );
@@ -422,18 +508,18 @@ class PlayPauseGlyph extends StatelessWidget {
     super.key,
     required this.progress,
     this.size = 40,
-    this.color = GlassColors.text,
+    this.color,
   });
 
   final double progress;
   final double size;
-  final Color color;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       size: Size.square(size),
-      painter: _PlayPausePainter(progress, color),
+      painter: _PlayPausePainter(progress, color ?? GlassColors.text),
     );
   }
 }
@@ -569,7 +655,9 @@ class SpeedBar extends StatelessWidget {
             HalfArrowIcon(
               up: isUp,
               size: fontSize * 1.08,
-              color: isUp ? GlassColors.accent : GlassColors.running,
+              color: glassDark
+                  ? GlassColors.textDim
+                  : (isUp ? GlassColors.accent : GlassColors.running),
             ),
             SizedBox(width: fontSize * 0.45),
             Flexible(

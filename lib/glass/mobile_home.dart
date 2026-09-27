@@ -367,7 +367,7 @@ class _NodePill extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.dns_rounded,
                 size: 16,
                 color: GlassColors.textDim,
@@ -379,7 +379,7 @@ class _NodePill extends StatelessWidget {
                   stripFlags(node),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: GlassColors.text,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -391,7 +391,7 @@ class _NodePill extends StatelessWidget {
               const SizedBox(width: 6),
               Tooltip(
                 message: strings.tapToSwitch,
-                child: const Icon(
+                child: Icon(
                   Icons.chevron_right_rounded,
                   size: 18,
                   color: GlassColors.textFaint,
@@ -428,7 +428,7 @@ class _Header extends StatelessWidget {
             child: Text(
               caption,
               key: ValueKey(caption),
-              style: const TextStyle(
+              style: TextStyle(
                 color: GlassColors.textDim,
                 fontSize: 13,
                 letterSpacing: 0.4,
@@ -454,7 +454,7 @@ class _Header extends StatelessWidget {
                     title,
                     maxLines: 2,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: GlassColors.text,
                       fontSize: 32,
                       fontWeight: FontWeight.w700,
@@ -467,7 +467,7 @@ class _Header extends StatelessWidget {
                 ),
                 if (!switching) ...[
                   const SizedBox(width: 4),
-                  const Icon(
+                  Icon(
                     Icons.keyboard_arrow_down_rounded,
                     color: GlassColors.textDim,
                     size: 28,
