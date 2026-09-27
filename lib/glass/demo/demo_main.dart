@@ -171,6 +171,7 @@ Future<void> main(List<String> args) async {
 
   final scene = _scenes[arg('scene', 'desktop_map')]!;
   glassDark = arg('theme', 'light') == 'dark';
+  if (glassDark) GlassPrefs.appearance.value = GlassAppearance.dark;
   if (arg('icon', 'light') == 'dark') GlassPrefs.icon.value = GlassIcon.dark;
   glassMobileLayout = scene.phone;
   if (!scene.phone) configureGlassForDesktop();

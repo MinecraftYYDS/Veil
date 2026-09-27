@@ -4,14 +4,27 @@
 
 </div>
 
-> [!NOTE]
-> **本项目是 [FlClash](https://github.com/chen08209/FlClash)（作者 chen08209）的修改版本**，由 [chinatsu033](https://github.com/chinatsu033/FlClash) 维护。
-> 它保留了 FlClash 的核心与服务逻辑，把主界面换成了「液态玻璃」风格：Windows 上是紧凑的迷你小组件窗口，Android 上是竖屏地图布局，节点在点阵世界地图上按地区分组显示。
-> 本项目与原项目一样采用 **GNU 通用公共许可证 v3.0（GPL-3.0）** 授权（见 [LICENSE](LICENSE)），并保留了上游的版权与许可声明。
-> Android 包名为 `com.chinatsu.flclash`，可以和原版 FlClash 同时安装。
-> 本分支的问题请不要反馈给上游 FlClash。
+# Veil
 
-## FlClash
+> [!NOTE]
+> **Veil 是 [FlClash](https://github.com/chen08209/FlClash)（作者 chen08209）的修改版本**，由 [chinatsu033](https://github.com/chinatsu033/Veil) 维护。
+> 它保留了 FlClash 的核心与服务逻辑，把主界面换成了「液态玻璃」风格：Windows 上是紧凑的迷你小组件窗口，Android 上是竖屏地图布局，节点在点阵世界地图上按地区分组显示。支持浅色（默认）和中性深色外观，并可在设置中切换两款应用图标。
+> 本项目与原项目一样采用 **GNU 通用公共许可证 v3.0（GPL-3.0）** 授权（见 [LICENSE](LICENSE)），并保留了上游的版权与许可声明。
+> Android 包名为 `com.chinatsu.veil`。Windows 版使用独立的安装目录、安装程序 ID、数据目录（`%APPDATA%\com.chinatsu\veil`）、核心/服务名称和端口，可与原版 FlClash 同时安装。
+> Veil 的问题请不要反馈给上游 FlClash。
+
+## 许可与致谢
+
+| 组件 | 用途 | 许可 |
+| --- | --- | --- |
+| [FlClash](https://github.com/chen08209/FlClash)（chen08209） | 除玻璃界面外的全部功能 | GPL-3.0 |
+| [Natural Earth](https://www.naturalearthdata.com/) 1:50m Admin 0 – Countries | 预先计算为点阵世界地图（`lib/glass/world_dots.dart`，由 `tool/gen_world_dots.py` 生成） | 公有领域 |
+| [Outfit](https://github.com/Outfitio/Outfit-Fonts) 字体，© 2021 The Outfit Project Authors | 仅用于应用图标中的「Veil」字标（已转为轮廓，应用内不打包该字体）；字体与许可见 `tool/icon/` | SIL OFL 1.1 |
+| Material Icons（随 Flutter 提供） | 界面图标 | Apache-2.0 |
+| JetBrains Mono、Twemoji（Mozilla 版）、`Icons.ttf` | 继承自上游 FlClash | OFL 1.1 / CC-BY 4.0（图形）/ 上游 |
+
+
+## FlClash（上游）
 
 [![Downloads](https://img.shields.io/github/downloads/chen08209/FlClash/total?style=flat-square&logo=github)](https://github.com/chen08209/FlClash/releases/)[![Last Version](https://img.shields.io/github/release/chen08209/FlClash/all.svg?style=flat-square)](https://github.com/chen08209/FlClash/releases/)[![License](https://img.shields.io/github/license/chen08209/FlClash?style=flat-square)](LICENSE)
 
